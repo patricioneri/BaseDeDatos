@@ -37,7 +37,16 @@ input:focus {
 }
 
 .resultados {
+    border: solid 1px #ccc;
+    border-radius: 8px;
     display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.resultados div {
+    display: flex;
+    margin-left: 10px;
 }
 
 .table {

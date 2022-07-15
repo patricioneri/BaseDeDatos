@@ -1,7 +1,8 @@
 //Defino array donde voy a almacenar los pacientes
 const pacientes = [];
+let comparacion = null;
 
-//defino función datos que tomar valores de inputs, los almacena en array de objetos y luego los guarda en storage
+//defino función datos que toma valores de inputs, los almacena en array de objetos y luego los guarda en storage
 const datos = () => {
     let name = document.getElementById('name').value;
     let lastName = document.getElementById('lastName').value;
@@ -17,10 +18,21 @@ const datos = () => {
         altura: height
     }
 
-    pacientes.push(paciente);
-    localStorage.setItem('datosPacientes', JSON.stringify(pacientes));
+    //traigo storage y lo guardo en array
+    let arrayComparacion = JSON.parse(localStorage.getItem('datosPacientes'));
 
+    //comparo el el objeto con el storage para ver si el paciente ya esta ingresado
+    if(arrayComparacion.some(el => el.nombre == paciente.nombre || el.apellido == paciente.apellido)) {
+        alert("paciente ingresado previamente");
+    } else {
+        pacientes.push(paciente);
+        localStorage.setItem('datosPacientes', JSON.stringify(pacientes));
     }
+
+    //reseteo inputs
+    form.reset();
+    }
+    
 
 //guardo el nodo button en variable y agrego evento que llama a funcion datos
 let agregar = document.getElementById('btn-agregar');
@@ -38,23 +50,40 @@ const mostrar = () => {
         table.append(infoPaciente);
 });
 }
-//guardo nodo button en variable y agrego evento que llama a funcin mostrar
+
+//guardo nodo button en variable y agrego evento que llama a funcion mostrar
 let informacion = document.getElementById('btn-mostrar');
 informacion.addEventListener("click", mostrar);
 
 
-//almaceno div en variable
+//almaceno div contenedor en variable
 const resultadoIMC = document.getElementById('resultadoIMC');
+const resultadoEdad = document.getElementById('resultadoEdad');
 
 //defino funcion que busca paciente y calcula el IMC
 const imc = () => {
     let nombreIMC = document.getElementById('nameIMC').value;
     let apellidoIMC = document.getElementById('lastNameIMC').value;
     let busqueda = (JSON.parse(localStorage.getItem('datosPacientes'))).find(el => el.nombre == nombreIMC || el.apellido == lastNameIMC);
-    let imc = (busqueda.peso / (busqueda.altura * busqueda.altura));
-    
 
-    resultadoIMC.append(imc);
+    let objectImc = {
+        imc: (busqueda.peso / (busqueda.altura * busqueda.altura)),
+        edadImc: busqueda.edad
+    } 
+    
+    // desestructuración de objeto
+    let {imc,edadImc} = objectImc;
+    
+    resultadoIMC.append(Math.round(imc));
+    resultadoEdad.append(edadImc);
+
+    if(imc <= 25 && imc >= 18.5) {
+        alert("Peso normal")
+    } else if (imc < 18.5) {
+        alert("Peso debajo de lo recomendado");
+    } else if (imc > 25) {
+        alert("Peso por arriba de lo recomendado");
+    }
 }
 
 //almaceno nodo del boton y agrego evento que llama a funcion imc
