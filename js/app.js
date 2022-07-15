@@ -22,7 +22,8 @@ const datos = () => {
     let arrayComparacion = JSON.parse(localStorage.getItem('datosPacientes'));
 
     //comparo el el objeto con el storage para ver si el paciente ya esta ingresado
-    if(arrayComparacion.some(el => el.nombre == paciente.nombre || el.apellido == paciente.apellido)) {
+    //evaluo si array comparacion es null (cuando no hay pacientes cargados aun). Si es null pasa al else y no hace comparación
+    if((arrayComparacion != null ) && arrayComparacion.some( el => el.nombre == paciente.nombre || el.apellido == paciente.apellido)) {
         alert("paciente ingresado previamente");
     } else {
         pacientes.push(paciente);
